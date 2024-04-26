@@ -3,6 +3,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import plotly.io as pio
 import pandas as pd
+##below import required for trandline function
 import statsmodels.api as sm
 pio.templates.default = "plotly_white"
 
@@ -28,3 +29,30 @@ figure = px.scatter(data_frame = data,
                     title = "Relationship Between Spending Capacity and Screentime",
                     trendline='ols' )
 figure.show()
+
+##relationship of ratings & avg app screen time
+figure = px.scatter(data_frame = data, 
+                    x="Average Screen Time",
+                    y="Ratings", 
+                    size="Ratings", 
+                    color= "Status", 
+                    title = "Relationship Between Ratings and Screentime",
+                    trendline="ols")
+figure.show()
+
+##k-means clustering applied to data
+clustering_data = data[["Average Screen Time", "Left Review", 
+                        "Ratings", "Last Visited Minutes", 
+                        "Average Spent on App (INR)", 
+                        "New Password Request"]]
+
+from sklearn.preprocessing import MinMaxScaler
+for i in clustering_data.columns:
+    MinMaxScaler(i)
+    
+from sklearn.cluster import KMeans
+kmeans = KMeans(n_clusters=3)
+clusters = kmeans.fit_predict(clustering_data)
+data["Segments"] = clusters
+
+print(data.head(10))
