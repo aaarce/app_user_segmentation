@@ -56,3 +56,30 @@ clusters = kmeans.fit_predict(clustering_data)
 data["Segments"] = clusters
 
 print(data.head(10))
+
+##look at segement numbers
+print(data["Segments"].value_counts())
+
+##rename segements
+data["Segments"] = data["Segments"].map({0: "Retained", 1: 
+    "Churn", 2: "Needs Attention"})
+
+##visualize the segments + explanation
+PLOT = go.Figure()
+for i in list(data["Segments"].unique()):
+    
+
+    PLOT.add_trace(go.Scatter(x = data[data["Segments"]== i]['Last Visited Minutes'],
+                                y = data[data["Segments"] == i]['Average Spent on App (INR)'],
+                                mode = 'markers',marker_size = 6, marker_line_width = 1,
+                                name = str(i)))
+PLOT.update_traces(hovertemplate='Last Visited Minutes: %{x} <br>Average Spent on App (INR): %{y}')
+
+    
+PLOT.update_layout(width = 800, height = 800, autosize = True, ##showlegend = True,
+                   yaxis_title = 'Average Spent on App (INR)',
+                   xaxis_title = 'Last Visited Minutes',
+                   scene = dict(xaxis=dict(title = 'Last Visited Minutes', titlefont_color = 'black'),
+                                yaxis=dict(title = 'Average Spent on App (INR)', titlefont_color = 'black')))
+# Plot it and save as basic-line.html
+##pyo.iplot(data, filename = 'basic-line')
